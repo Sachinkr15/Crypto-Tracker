@@ -1,13 +1,14 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinData } from "../../Services/fetchCoinData";
-import { CurrencyContext } from "../../Context/CurrencyContext.js";
+import currencyStore from '../../state/store.js';
+// import { CurrencyContext } from "../../Context/CurrencyContext.js";
 
 //use reqct qyuery : so we need to wrap our app with QueryClientProvider.
 
 function CoinTable() {
 
-   const {currency}= useContext(CurrencyContext);
+   const {currency}= currencyStore();
   const [page, Setpage] = useState(1);
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["coins", page , currency],
