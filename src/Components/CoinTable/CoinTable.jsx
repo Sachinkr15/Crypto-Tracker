@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchCoinData } from "../../Services/fetchCoinData";
-import currencyStore from '../../state/store.js';
+import currencyStore from "../../state/store.js";
+import { useNavigate } from "react-router-dom";
 // import { CurrencyContext } from "../../Context/CurrencyContext.js";
 
 //use reqct qyuery : so we need to wrap our app with QueryClientProvider.
 
 function CoinTable() {
-
-   const {currency}= currencyStore();
+  const { currency } = currencyStore();
+  const navigate = useNavigate();
   const [page, Setpage] = useState(1);
   const { data, isLoading, isError, error } = useQuery({
-    queryKey: ["coins", page , currency],
+    queryKey: ["coins", page, currency],
     queryFn: () => fetchCoinData(page, currency),
     cacheTime: 1000 * 60 * 2, // Cache for 2 minutes
     // staleTime: 1000 * 60 *2, // Data is fresh for 1 minute
@@ -23,15 +24,17 @@ function CoinTable() {
   //     console.log("Fetched data:", data);
   //   },[data]);
 
-  
-
   if (isError) {
     return <div>Error: {error.message}</div>;
   }
 
+  function handleRedirect(id) {
+    navigate(`/details/${id}`);
+  }
+
   return (
     <div className="my-5 flex flex-col gap-5 items-center justify-center w-[80vw] mx-auto">
-      <div className="w-full bg-yellow-400 text-black flex py-2 px-2 font-semibold items-center justify-center">
+      <div className="w-full bg-yellow-400 text-black flex py-2 px-2 font-semibold items-center justify-center cursor-pointer">
         <div className="basis-[35%]">Coin</div>
 
         <div className="basis-[25%]">Price</div>
@@ -48,6 +51,7 @@ function CoinTable() {
             return (
               <div
                 key={coin.id}
+                onClick={() => handleRedirect(coin.id)}
                 className="w-full bg-transparent text-white flex py-4 px-2 font-semibold items-center justify-between "
               >
                 <div className="flex items-center justify-start basis-[35%] gap-3">
